@@ -7,7 +7,20 @@ const apiRoutes = require('./routes/api');
 dotenv.config();
 
 const app = express();
-app.use(cors());
+
+// CORS konfiguráció
+const corsOptions = {
+  origin: [
+    'https://vercel.com/paron1212s-projects/diary/DifeuoFUE6idxTbsq8Stk4zqdY5d',  // Vercel frontend domain
+    'http://localhost:5500',                // Lokális fejlesztés (ha szükséges)
+    process.env.FRONTEND_URL                 // Környezeti változóból
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'user-id'],  // Engedélyezett fejlécek
+  credentials: true  // Ha session/cookie-t használsz
+};
+
+app.use(cors(corsOptions));  // <-- Itt alkalmazd a konfigurációt
 app.use(express.json());
 
 // MongoDB connection

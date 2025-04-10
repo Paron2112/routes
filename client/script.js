@@ -19,7 +19,7 @@ let routeMarkers = null;
 let routeLines = null;
 let map = null;
 
-const API_URL = 'http://localhost:3000/api';
+FRONTEND_URL=https://https://vercel.com/paron1212s-projects/diary/DifeuoFUE6idxTbsq8Stk4zqdY5d
 
 // Event Listener para Registro
 registerForm.addEventListener('submit', async function(e) {

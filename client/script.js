@@ -19,7 +19,7 @@ let routeMarkers = null;
 let routeLines = null;
 let map = null;
 
-const API_URL = 'http://localhost:3000/api';
+const API_URL = 'https://routes-dze2.onrender.com/api';
 
 // Event Listener para Registro
 registerForm.addEventListener('submit', async function(e) {

@@ -11,16 +11,21 @@ const app = express();
 // CORS konfiguráció
 const corsOptions = {
   origin: [
-    'https://vercel.com/paron1212s-projects/diary/DifeuoFUE6idxTbsq8Stk4zqdY5d',  // Vercel frontend domain
-    'http://localhost:5500',                // Lokális fejlesztés (ha szükséges)
+    'https://diary-lyart-seven.vercel.app',  // Your ACTUAL Vercel frontend domain
+    'http://localhost:5500',                // Lokális fejlesztés
     process.env.FRONTEND_URL                 // Környezeti változóból
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'user-id'],  // Engedélyezett fejlécek
-  credentials: true  // Ha session/cookie-t használsz
+  allowedHeaders: ['Content-Type', 'Authorization', 'user-id'],
+  credentials: true,
+  preflightContinue: false  // Explicit preflight handling
 };
 
-app.use(cors(corsOptions));  // <-- Itt alkalmazd a konfigurációt
+app.use(cors(corsOptions));
+
+// Explicit OPTIONS handler for all routes
+app.options('*', cors(corsOptions)); // ← Add this line
+
 app.use(express.json());
 
 // MongoDB connection

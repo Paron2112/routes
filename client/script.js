@@ -19,7 +19,11 @@ let routeMarkers = null;
 let routeLines = null;
 let map = null;
 
+<<<<<<< HEAD
 FRONTEND_URL=https://https://vercel.com/paron1212s-projects/diary/DifeuoFUE6idxTbsq8Stk4zqdY5d
+=======
+const API_URL = 'https://routes-dze2.onrender.com/api';
+>>>>>>> master
 
 // Event Listener para Registro
 registerForm.addEventListener('submit', async function(e) {
@@ -392,4 +396,8 @@ logoutBtn.addEventListener('click', function() {
 createRouteBtn.addEventListener('click', createNewRoute);
 
 // Initialize app
+<<<<<<< HEAD
 checkAuth();
+=======
+checkAuth();
+>>>>>>> master

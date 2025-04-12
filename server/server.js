@@ -11,18 +11,28 @@ dotenv.config();
 const app = express();
 
 // CORS Configuration
+const allowedOrigins = [
+  'https://diary-lyart-seven.vercel.app',
+  'http://localhost:5500',
+  process.env.FRONTEND_URL
+];
+
 const corsOptions = {
-  origin: [
-    'https://diary-lyart-seven.vercel.app',
-    'http://localhost:5500', 
-    'null',
-    process.env.FRONTEND_URL
-  ],
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.error(`Origin ${origin} is not allowed by CORS`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'user-id'],
   credentials: true,
-  preflightContinue: false
+  optionsSuccessStatus: 200,  
 };
+
 
 // Middleware
 app.use(cors(corsOptions));

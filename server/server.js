@@ -26,16 +26,23 @@ app.use(cors({
 app.use(express.json());
 
 // Database Connection
+let cachedDb = null;
+
 const connectDB = async () => {
+  if (cachedDb) {
+    return;
+  }
+
   try {
     await mongoose.connect(process.env.MONGO_URI, {
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
     });
+    cachedDb = mongoose.connection;
     console.log('✅ MongoDB connected successfully');
   } catch (err) {
     console.error('❌ MongoDB connection error:', err);
-    process.exit(1);
+    cachedDb = null;
   }
 };
 
@@ -59,11 +66,10 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Internal Server Error' });
 });
 
-// Only create server if not in test environment
-let server;
-if (process.env.NODE_ENV !== 'test') {
+// For local development only
+if (process.env.NODE_ENV === 'development') {
   const PORT = process.env.PORT || 3000;
-  server = app.listen(PORT, () => {
+  app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
   });
 }

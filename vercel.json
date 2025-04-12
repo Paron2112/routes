@@ -17,7 +17,7 @@
   "routes": [
     {
       "src": "/(.*\\.(js|css))",
-      "dest": "/$1"
+      "dest": "/client/$1"
     },
     {
       "src": "/(.*)",

@@ -14,7 +14,6 @@ const app = express();
 const corsOptions = {
   origin: [
     'https://diary-lyart-seven.vercel.app',
-    'https://diary-lyart-seven-server.vercel.app',
     'http://localhost:5500', 
     'null',
     process.env.FRONTEND_URL

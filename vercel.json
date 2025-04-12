@@ -1,23 +1,24 @@
 {
-    "version": 2,
-    "builds": [
-        {
-          "src": "client/*.html",
-          "use": "@vercel/static"
-        },
-        {
-          "src": "client/*.js",
-          "use": "@vercel/static"
-        },
-        {
-          "src": "client/*.css",
-          "use": "@vercel/static"
-        }
-      ],
-      "routes": [
-        {
-          "src": "/(.*)",
-          "dest": "/client/index.html"
-        }
-      ]
-  }
+  "version": 2,
+  "builds": [
+    {
+      "src": "client/*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "client/*.js",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "client/*.css",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/client/index.html",
+      "check": true
+    }
+  ]
+}

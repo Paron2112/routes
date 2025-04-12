@@ -12,11 +12,7 @@ const app = express();
 
 // CORS Configuration
 app.use(cors({
-  origin: [
-    'https://diary-lyart-seven.vercel.app',
-    'http://localhost:5500',
-    process.env.FRONTEND_URL,
-  ],
+  origin: ['https://diary-lyart-seven.vercel.app', 'http://localhost:5500'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'user-id']
@@ -74,17 +70,20 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
-// Handle shutdown gracefully
-process.on('SIGTERM', () => {
-  if (server) {
-    server.close(() => {
+// Handle graceful shutdown for local development
+if (process.env.NODE_ENV === 'development') {
+  process.on('SIGTERM', () => {
+    console.log('🛑 SIGTERM received. Shutting down gracefully...');
+    if (cachedDb) {
       mongoose.connection.close(false, () => {
         console.log('🔌 MongoDB connection closed');
         process.exit(0);
       });
-    });
-  }
-});
+    } else {
+      process.exit(0);
+    }
+  });
+}
 
-// Export app for testing and server for normal operation
-module.exports = process.env.NODE_ENV === 'test' ? app : server;
+// Export the Express app
+module.exports = app;

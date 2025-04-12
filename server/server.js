@@ -12,7 +12,11 @@ const app = express();
 
 // CORS Configuration
 app.use(cors({
-  origin: ['https://diary-lyart-seven.vercel.app', 'http://localhost:5500'],
+  origin: [
+    'https://diary-lyart-seven.vercel.app',
+    'http://localhost:5500',
+    process.env.FRONTEND_URL,
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'user-id']

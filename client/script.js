@@ -19,7 +19,7 @@ let routeMarkers = null;
 let routeLines = null;
 let map = null;
 
-const API_URL = window.location.hostname === 'localhost' 
+const API_URL = window.location.hostname === '' || window.location.hostname === 'localhost'
   ? 'http://localhost:3000/api'
   : '/api';
 

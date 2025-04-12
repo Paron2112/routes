@@ -50,6 +50,13 @@ registerForm.addEventListener('submit', async function(e) {
 
 // Initialize Map (after login)
 function initMap() {
+    if (map) {
+        // If map exists, just reset the view
+        map.setView([49.8153, 6.1296], 13);
+        return;
+    }
+    
+    // Initialize map only if it doesn't exist
     map = L.map('map').setView([49.8153, 6.1296], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -84,6 +91,14 @@ function hideApp() {
     loginContainer.style.display = 'block';
     appContainer.style.display = 'none';
     currentUserId = null;
+    
+    // Clean up map
+    if (map) {
+        map.remove();
+        map = null;
+        routeMarkers = null;
+        routeLines = null;
+    }
 }
 
 // Route Management
@@ -369,6 +384,7 @@ loginForm.addEventListener('submit', async function(e) {
             body: JSON.stringify({ username, password }),
         });
         const data = await response.json();
+        console.log(data);
         if (data.userId) {
             currentUserId = data.userId;
             localStorage.setItem('userId', currentUserId);

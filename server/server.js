@@ -12,32 +12,29 @@ const app = express();
 
 // CORS Configuration
 const allowedOrigins = [
-  'https://diary-lyart-seven.vercel.app',
-  'http://localhost:5500',
-  process.env.FRONTEND_URL
+  'https://diary-lyart-seven.vercel.app',    // Production frontend
+  'http://localhost:5500',                    // Local frontend
+  'http://localhost:3000',                    // Local backend
+  'http://127.0.0.1:5500',                     // Alternative local frontend
+  process.env.FRONTEND_URL,                  // Dynamic frontend URL from environment variables
 ];
 
-const corsOptions = {
-  origin: function(origin, callback) {
-    console.log("Incoming request origin:", origin);
+app.use(cors({
+  origin: function (origin, callback) {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1) {
+    if (allowedOrigins.indexOf(origin) !== -1 || origin.includes('vercel.app')) {
       callback(null, true);
     } else {
-      console.error(`Origin ${origin} is not allowed by CORS`);
+      console.error('CORS error:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'user-id'],
   credentials: true,
-  optionsSuccessStatus: 200,  
-};
-
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'user-id']
+}));
 
 // Middleware
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // Preflight requests
 app.use(express.json());
 
 // Database Connection

@@ -2,21 +2,25 @@
   "version": 2,
   "builds": [
     {
-      "src": "client/*.html",
+      "src": "client/**",
       "use": "@vercel/static"
     },
     {
-      "src": "client/*.js",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "client/*.css",
-      "use": "@vercel/static"
+      "src": "server/server.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/(.*\\.(js|css))",
+      "src": "/api/(.*)",
+      "dest": "/server/server.js"
+    },
+    {
+      "src": "/(.*\\.js)",
+      "dest": "/client/$1"
+    },
+    {
+      "src": "/(.*\\.css)",
       "dest": "/client/$1"
     },
     {

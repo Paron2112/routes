@@ -16,7 +16,11 @@
   ],
   "routes": [
     {
-      "src": "^/(?!.*\\.(js|css|png|jpg|jpeg|gif|svg)$)(.*)$",
+      "src": "/(.*\\.(js|css))",
+      "dest": "/$1"
+    },
+    {
+      "src": "/(.*)",
       "dest": "/client/index.html"
     }
   ]

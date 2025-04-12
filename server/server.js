@@ -11,24 +11,12 @@ dotenv.config();
 const app = express();
 
 // CORS Configuration
-const allowedOrigins = [
-  'https://diary-lyart-seven.vercel.app',    // Production frontend
-  'http://localhost:5500',                    // Local frontend
-  'http://localhost:3000',                    // Local backend
-  'http://127.0.0.1:5500',                     // Alternative local frontend
-  process.env.FRONTEND_URL,                  // Dynamic frontend URL from environment variables
-];
-
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1 || origin.includes('vercel.app')) {
-      callback(null, true);
-    } else {
-      console.error('CORS error:', origin);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: [
+    'https://diary-lyart-seven.vercel.app',
+    'http://localhost:5500',
+    process.env.FRONTEND_URL,
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'user-id']
@@ -38,43 +26,59 @@ app.use(cors({
 app.use(express.json());
 
 // Database Connection
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => console.log('✅ MongoDB connected successfully'))
-.catch(err => console.error('❌ MongoDB connection error:', err));
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    });
+    console.log('✅ MongoDB connected successfully');
+  } catch (err) {
+    console.error('❌ MongoDB connection error:', err);
+    process.exit(1);
+  }
+};
+
+// Connect to MongoDB
+connectDB();
 
 // API Routes
 app.use('/api', apiRoutes);
 
 // Health Check Endpoint
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK', timestamp: new Date() });
+  res.status(200).json({ 
+    status: 'OK',
+    mongo: mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'
+  });
 });
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
-  console.error('⚠️ Error:', err.stack);
-  res.status(500).json({ error: 'Internal Server Error' });
+  console.error('⚠️ Error:', err);
+  res.status(500).json({ message: 'Internal Server Error' });
 });
 
-// Start Server
-const PORT = process.env.PORT || 3000;
-const server = app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`🔗 http://localhost:${PORT}`);
-});
+// Only create server if not in test environment
+let server;
+if (process.env.NODE_ENV !== 'test') {
+  const PORT = process.env.PORT || 3000;
+  server = app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+  });
+}
 
 // Handle shutdown gracefully
 process.on('SIGTERM', () => {
-  console.log('🛑 SIGTERM received. Shutting down gracefully...');
-  server.close(() => {
-    mongoose.connection.close(false, () => {
-      console.log('🔌 MongoDB connection closed');
-      process.exit(0);
+  if (server) {
+    server.close(() => {
+      mongoose.connection.close(false, () => {
+        console.log('🔌 MongoDB connection closed');
+        process.exit(0);
+      });
     });
-  });
+  }
 });
 
-module.exports = server;
+// Export app for testing and server for normal operation
+module.exports = process.env.NODE_ENV === 'test' ? app : server;
